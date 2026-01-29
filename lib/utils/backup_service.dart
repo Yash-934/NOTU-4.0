@@ -1,7 +1,6 @@
 
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:notu/models/book.dart';
@@ -80,10 +79,11 @@ class BackupService {
       }
 
       for (final chapterMap in chapterList) {
-        final oldBookId = chapterMap['bookId'];
+        final oldBookId = chapterMap['book_id'];
         final newBookId = oldToNewBookIds[oldBookId];
         if (newBookId != null) {
-          final newChapter = Chapter.fromMap(chapterMap..remove('id'))..bookId = newBookId;
+          chapterMap['book_id'] = newBookId;
+          final newChapter = Chapter.fromMap(chapterMap..remove('id'));
           await dbHelper.insertChapter(newChapter);
         }
       }

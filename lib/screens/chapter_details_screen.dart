@@ -4,9 +4,6 @@ import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:notu/models/chapter.dart';
 import 'package:notu/utils/database_helper.dart';
 import 'package:notu/utils/pdf_generator.dart';
-import 'package:printing/printing.dart';
-import 'package:pdf/pdf.dart';
-import 'package:pdf/widgets.dart' as pw;
 import 'package:webview_flutter/webview_flutter.dart';
 
 class ChapterDetailsScreen extends StatefulWidget {
@@ -105,33 +102,14 @@ class _ChapterDetailsScreenState extends State<ChapterDetailsScreen> {
           ),
           PopupMenuButton<String>(
             onSelected: (value) async {
-              if (value == 'pdf') {
-                PdfGenerator.generate(widget.chapter.title, _contentController.text);
-              } else if (value == 'print') {
-                final doc = pw.Document();
-                doc.addPage(pw.Page(
-                    pageFormat: PdfPageFormat.a4,
-                    build: (pw.Context context) {
-                      return pw.Column(
-                          crossAxisAlignment: pw.CrossAxisAlignment.start,
-                          children: [
-                            pw.Text(widget.chapter.title, style: pw.TextStyle(fontSize: 24, fontWeight: pw.FontWeight.bold)),
-                            pw.SizedBox(height: 16),
-                            pw.Text(_contentController.text),
-                          ]);
-                    }));
-                await Printing.layoutPdf(
-                    onLayout: (PdfPageFormat format) async => doc.save());
+              if (value == 'export') {
+                await PdfGenerator.generate(widget.chapter.title, _contentController.text, widget.chapter.contentType);
               }
             },
             itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
               const PopupMenuItem<String>(
-                value: 'pdf',
-                child: Text('Save as PDF'),
-              ),
-              const PopupMenuItem<String>(
-                value: 'print',
-                child: Text('Print'),
+                value: 'export',
+                child: Text('Export as PDF'),
               ),
             ],
           ),

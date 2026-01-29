@@ -4,6 +4,7 @@ import 'package:notu/models/book.dart';
 import 'package:notu/models/chapter.dart';
 import 'package:notu/screens/add_chapter_screen.dart';
 import 'package:notu/screens/chapter_details_screen.dart';
+import 'package:notu/screens/reorder_chapters_screen.dart';
 import 'package:notu/utils/database_helper.dart';
 
 class BookDetailsScreen extends StatefulWidget {
@@ -68,6 +69,32 @@ class _BookDetailsScreenState extends State<BookDetailsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.book.title),
+        actions: [
+          FutureBuilder<List<Chapter>>(
+            future: _chaptersFuture,
+            builder: (context, snapshot) {
+              if (snapshot.hasData && snapshot.data!.length > 1) {
+                return IconButton(
+                  icon: const Icon(Icons.reorder),
+                  onPressed: () async {
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ReorderChaptersScreen(
+                          chapters: snapshot.data!,
+                        ),
+                      ),
+                    );
+                    setState(() {
+                      _chaptersFuture = dbHelper.getChapters(widget.book.id!);
+                    });
+                  },
+                );
+              }
+              return const SizedBox.shrink();
+            },
+          ),
+        ],
       ),
       body: FutureBuilder<List<Chapter>>(
         future: _chaptersFuture,

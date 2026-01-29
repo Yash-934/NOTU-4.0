@@ -7,6 +7,7 @@ class Chapter {
   String title;
   String content;
   ContentType contentType;
+  int? chapterOrder; // Add this line
 
   Chapter({
     this.id,
@@ -14,6 +15,7 @@ class Chapter {
     required this.title,
     required this.content,
     this.contentType = ContentType.markdown,
+    this.chapterOrder, // Add this line
   });
 
   Map<String, dynamic> toMap() {
@@ -23,6 +25,7 @@ class Chapter {
       'title': title,
       'content': content,
       'content_type': contentType.index,
+      'chapter_order': chapterOrder, // Add this line
     };
   }
 
@@ -33,6 +36,7 @@ class Chapter {
       title: map['title'],
       content: map['content'],
       contentType: ContentType.values[map['content_type'] ?? 0],
+      chapterOrder: map['chapter_order'], // Add this line
     );
   }
 }

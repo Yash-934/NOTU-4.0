@@ -28,7 +28,7 @@ class DatabaseHelper {
     String path = join(documentsDirectory.path, 'notu.db');
     return await openDatabase(
       path,
-      version: 5, // Incremented version to trigger onUpgrade
+      version: 6, // Incremented version to trigger onUpgrade
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
     );
@@ -49,6 +49,7 @@ class DatabaseHelper {
         title TEXT,
         content TEXT,
         content_type INTEGER DEFAULT 0,
+        chapter_order INTEGER,
         FOREIGN KEY (book_id) REFERENCES books (id) ON DELETE CASCADE
       )
     ''');
@@ -78,6 +79,9 @@ class DatabaseHelper {
     }
     if (oldVersion < 5) {
       await db.execute('ALTER TABLE todos ADD COLUMN createdAt TEXT');
+    }
+    if (oldVersion < 6) {
+      await db.execute('ALTER TABLE chapters ADD COLUMN chapter_order INTEGER');
     }
   }
 
@@ -122,6 +126,8 @@ class DatabaseHelper {
   // Chapter operations
   Future<int> insertChapter(Chapter chapter) async {
     Database db = await database;
+    final chapters = await getChapters(chapter.bookId!);
+    chapter.chapterOrder = chapters.length;
     return await db.insert('chapters', chapter.toMap());
   }
 
@@ -131,6 +137,7 @@ class DatabaseHelper {
       'chapters',
       where: 'book_id = ?',
       whereArgs: [bookId],
+      orderBy: 'chapter_order',
     );
     return List.generate(maps.length, (i) {
       return Chapter.fromMap(maps[i]);
@@ -153,6 +160,22 @@ class DatabaseHelper {
       where: 'id = ?',
       whereArgs: [chapter.id],
     );
+  }
+
+  Future<void> updateChapterOrder(List<Chapter> chapters) async {
+    Database db = await database;
+    Batch batch = db.batch();
+    for (int i = 0; i < chapters.length; i++) {
+      final chapter = chapters[i];
+      chapter.chapterOrder = i;
+      batch.update(
+        'chapters',
+        {'chapter_order': i},
+        where: 'id = ?',
+        whereArgs: [chapter.id],
+      );
+    }
+    await batch.commit(noResult: true);
   }
 
   Future<int> deleteChapter(int id) async {
