@@ -1,0 +1,52 @@
+
+name: notu
+description: "A new Flutter project."
+publish_to: 'none'
+
+version: 3.0.4+5
+
+environment:
+  sdk: ^3.9.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  provider: ^6.1.5+1
+  google_fonts: ^8.0.0
+  animations: ^2.1.1
+  flutter_markdown_plus: ^1.0.7
+  sqflite: ^2.4.2
+  path_provider: ^2.1.5
+  path: ^1.9.1
+  image_picker: ^1.2.1
+  webview_flutter: ^4.13.1
+  package_info_plus: ^9.0.0
+  pdf: ^3.11.3
+  printing: ^5.14.2
+  file_picker: ^10.3.10
+  sqflite_common_ffi: ^2.3.7+1
+  intl: ^0.20.2
+  flutter_native_splash: ^2.4.7
+  flutter_quill: ^11.5.0
+  markdown_quill: ^4.3.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+  flutter_launcher_icons: ^0.14.4
+
+flutter:
+  uses-material-design: true
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "web/icons/Icon-192.png"
+
+flutter_native_splash:
+  color: "#FFFFFF"
+  image: web/icons/Icon-192.png
+  android: true
+  ios: true
