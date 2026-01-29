@@ -1,27 +1,46 @@
 
-import 'package:htmltopdfwidgets/htmltopdfwidgets.dart';
-import 'package:markdown/markdown.dart' as md;
-import 'package:notu/models/chapter.dart';
+import 'package:html/parser.dart';
+import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
+import 'package:notu/models/chapter.dart';
+import 'package:markdown/markdown.dart' as md;
 
 class PdfGenerator {
   static Future<void> generate(String title, String content, ContentType contentType) async {
     final pdf = pw.Document();
 
-    String htmlContent;
-    if (contentType == ContentType.markdown) {
-      htmlContent = md.markdownToHtml(content);
+    String plainTextContent;
+    if (contentType == ContentType.html) {
+      final document = parse(content);
+      plainTextContent = document.body!.text;
+    } else if (contentType == ContentType.markdown) {
+      // Convert markdown to HTML, then parse to plain text
+      final html = md.markdownToHtml(content);
+      final document = parse(html);
+      plainTextContent = document.body!.text;
     } else {
-      htmlContent = content;
+      plainTextContent = content;
     }
 
-    // Convert HTML to a list of PDF widgets
-    final List<pw.Widget> widgets = await HTMLToPdf().convert(htmlContent);
+    final font = await PdfGoogleFonts.notoColorEmoji();
+    final regular = await PdfGoogleFonts.notoSansRegular();
+    final italic = await PdfGoogleFonts.notoSansItalic();
+    final bold = await PdfGoogleFonts.notoSansBold();
+    final boldItalic = await PdfGoogleFonts.notoSansBoldItalic();
+
+    final theme = pw.ThemeData.withFont(
+      base: regular,
+      italic: italic,
+      bold: bold,
+      boldItalic: boldItalic,
+      fontFallback: [font],
+    );
 
     pdf.addPage(
       pw.MultiPage(
         pageFormat: PdfPageFormat.a4,
+        theme: theme,
         build: (pw.Context context) {
           return <pw.Widget>[
             pw.Header(
@@ -29,8 +48,7 @@ class PdfGenerator {
               child: pw.Text(title, style: pw.TextStyle(fontSize: 24, fontWeight: pw.FontWeight.bold)),
             ),
             pw.SizedBox(height: 16),
-            // Add the generated widgets to the page
-            ...widgets,
+            pw.Paragraph(text: plainTextContent),
           ];
         },
       ),
