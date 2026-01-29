@@ -3,7 +3,7 @@ name: notu
 description: "A new Flutter project."
 publish_to: 'none'
 
-version: 3.0.4+6
+version: 3.0.4+7
 
 environment:
   sdk: ^3.9.0

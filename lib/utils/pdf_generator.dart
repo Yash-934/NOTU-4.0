@@ -28,14 +28,14 @@ class PdfGenerator {
     final notoSansItalic = await PdfGoogleFonts.notoSansItalic();
     final notoSansBold = await PdfGoogleFonts.notoSansBold();
     final notoSansBoldItalic = await PdfGoogleFonts.notoSansBoldItalic();
-    final notoSansDevanagari = await PdfGoogleFonts.notoSansDevanagariRegular();
+    final notoSerifDevanagari = await PdfGoogleFonts.notoSerifDevanagariRegular();
 
     final theme = pw.ThemeData.withFont(
       base: notoSans,
       italic: notoSansItalic,
       bold: notoSansBold,
       boldItalic: notoSansBoldItalic,
-      fontFallback: [notoSansDevanagari, notoColorEmoji],
+      fontFallback: [notoSerifDevanagari, notoColorEmoji],
     );
 
     pdf.addPage(
