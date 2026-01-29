@@ -23,18 +23,19 @@ class PdfGenerator {
       plainTextContent = content;
     }
 
-    final font = await PdfGoogleFonts.notoColorEmoji();
-    final regular = await PdfGoogleFonts.notoSansRegular();
-    final italic = await PdfGoogleFonts.notoSansItalic();
-    final bold = await PdfGoogleFonts.notoSansBold();
-    final boldItalic = await PdfGoogleFonts.notoSansBoldItalic();
+    final notoColorEmoji = await PdfGoogleFonts.notoColorEmoji();
+    final notoSans = await PdfGoogleFonts.notoSansRegular();
+    final notoSansItalic = await PdfGoogleFonts.notoSansItalic();
+    final notoSansBold = await PdfGoogleFonts.notoSansBold();
+    final notoSansBoldItalic = await PdfGoogleFonts.notoSansBoldItalic();
+    final notoSansDevanagari = await PdfGoogleFonts.notoSansDevanagariRegular();
 
     final theme = pw.ThemeData.withFont(
-      base: regular,
-      italic: italic,
-      bold: bold,
-      boldItalic: boldItalic,
-      fontFallback: [font],
+      base: notoSans,
+      italic: notoSansItalic,
+      bold: notoSansBold,
+      boldItalic: notoSansBoldItalic,
+      fontFallback: [notoSansDevanagari, notoColorEmoji],
     );
 
     pdf.addPage(
